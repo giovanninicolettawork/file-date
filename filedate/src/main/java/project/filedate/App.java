@@ -16,13 +16,10 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class App {
-	
-	
+
 	private static Logger logger = Logger.getLogger(App.class.getSimpleName());
-	
-	
+
 	public static void main(String[] args) throws Exception {
 
 		String filePath = getInputFromUser();
@@ -34,13 +31,15 @@ public class App {
 		logger.log(Level.INFO, "#DATA# (java.nio.file: Files.getAttribute): {0} ", f1FileTimeV1);
 		logger.log(Level.INFO, "#DATA# (java.nio.file: Files.readAttributes): {0} ", f1FileTimeV2);
 
-		String f1r = executeStatCommand(f1.getAbsolutePath());
-		logger.log(Level.INFO, "#DATA# (Linux stat command):  {0}", getDateFromCommandExecution(f1r));
-
+		if (getOperatingSystemDetails().contains("Linux")) {
+			String f1r = executeStatCommand(f1.getAbsolutePath());
+			logger.log(Level.INFO, "#DATA# (Linux stat command):  {0}", getDateFromCommandExecution(f1r));
+		}
 	}
 
 	/**
 	 * Allows the user to input into console
+	 * 
 	 * @return the string entered by the user
 	 */
 	private static String getInputFromUser() {
@@ -53,7 +52,9 @@ public class App {
 	}
 
 	/**
-	 * Extracts the date from the string returned by the 'stat' command using a regex
+	 * Extracts the date from the string returned by the 'stat' command using a
+	 * regex
+	 * 
 	 * @param stringResult the result of the 'stat' command
 	 * @return the date extracted
 	 */
@@ -78,6 +79,7 @@ public class App {
 
 	/**
 	 * Runs the linux 'stat' command on the specified path
+	 * 
 	 * @param filepath path of the file to be analyzed
 	 * @return result of executing the command
 	 * @throws Exception
@@ -112,6 +114,14 @@ public class App {
 			process.destroy();
 		}
 		return result.toString();
+	}
 
+	/**
+	 * This Method returns the current Operating System
+	 * 
+	 * @return the OS name as a String
+	 */
+	public static String getOperatingSystemDetails() {
+		return System.getProperty("os.name");
 	}
 }
